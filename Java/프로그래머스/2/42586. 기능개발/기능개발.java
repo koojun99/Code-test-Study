@@ -2,24 +2,29 @@ import java.util.*;
 
 class Solution {
     public int[] solution(int[] progresses, int[] speeds) {
-        int n = progresses.length;
+        Queue<Integer> q = new LinkedList<>();
         List<Integer> answerList = new ArrayList<>();
-        int index = 0;
-        
-        while (index < n) {
-            int days = (int)Math.ceil((100 - progresses[index]) / (double)speeds[index]);
-            int count = 0;
-            while(index < n && Math.ceil((100 - progresses[index]) / (double)speeds[index]) <= days) {
-                count++;
-                index++;
+
+        for (int i = 0; i < speeds.length; i++) {
+            double remain = (100 - progresses[i]) / (double) speeds[i];
+            int date = (int) Math.ceil(remain);
+
+            if (!q.isEmpty() && q.peek() < date) {
+                answerList.add(q.size());
+                q.clear();
             }
-            answerList.add(count);
+
+            q.offer(date);
         }
-        
+
+        answerList.add(q.size());
+
         int[] answer = new int[answerList.size()];
+
         for (int i = 0; i < answer.length; i++) {
             answer[i] = answerList.get(i);
         }
+
         return answer;
     }
 }
