@@ -1,42 +1,39 @@
-import java.util.Arrays;
-import java.util.Scanner;
+import java.io.*;
+import java.util.*;
 
 public class Main {
-    public static void main(String[] args) {
-		Scanner sc = new Scanner(System.in);
-	    long treeCount = sc.nextLong();
-	    long n = sc.nextLong();
-        long[] trees = new long[(int) treeCount];
+    public static void main(String[] args) throws IOException {
+        Scanner sc = new Scanner(System.in);
+        int n = sc.nextInt();
+        int m = sc.nextInt();
 
-        for (int i = 0; i < treeCount; i++) {
-            trees[i] = sc.nextLong();
+        int[] trees = new int[n];
+        int maxHeight = 0;
+        for (int i = 0; i < n; i++) {
+            trees[i] = sc.nextInt();
+            maxHeight = Math.max(maxHeight, trees[i]);
         }
 
-        // 이진 탐색 초기화
-        long left = 0;
-        long right = Arrays.stream(trees).max().getAsLong();
-        long height = 0;
+        int low = 0;
+        int high = maxHeight;
+        int answer = 0;
+        while (low <= high) {
+            int mid = (low + high) / 2;
+            long total = 0;
 
-        while (left <= right) {
-            long mid = (left + right) / 2;
-            long currentWoods = 0;
-
-            // 현재 높이(mid)로 자른 나무 길이 계산
-            for (long tree : trees) {
-                if (tree > mid) {
-                    currentWoods += tree - mid;
-                }
+            for (int i = 0; i < n; i++) {
+                total += Math.max(0, trees[i] - mid);
             }
 
-            // 필요한 나무 양이 충족되면 높이 증가, 부족하면 높이 감소
-            if (currentWoods >= n) {
-                height = mid; // 가능한 최대 높이 갱신
-                left = mid + 1;
+            if (total >= m) {
+                answer = mid;
+                low = mid + 1;
             } else {
-                right = mid - 1;
+                high = mid - 1;
             }
         }
 
-        System.out.println(height);
+        System.out.println(answer);
+
     }
 }
